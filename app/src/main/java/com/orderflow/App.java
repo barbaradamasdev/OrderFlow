@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.orderflow.model.Order;
+import com.orderflow.model.OrderProcessingResult;
 import com.orderflow.service.OrderProcessor;
 
 public class App {
@@ -25,8 +26,8 @@ public class App {
         );
 
         OrderProcessor processor = new OrderProcessor();
-        Map<Long, List<Order>> grouped =
-                processor.groupByCustomer(orders);
+        OrderProcessingResult result = processor.groupByCustomer(orders);
+        Map<Long, List<Order>> grouped = result.getOrdersByCustomer();                
 
         for (Map.Entry<Long, List<Order>> entry : grouped.entrySet()) {
             System.out.println("Customer: " + entry.getKey());

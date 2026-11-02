@@ -9,10 +9,11 @@ import java.util.Map;
 import java.util.Set;
 
 import com.orderflow.model.Order;
+import com.orderflow.model.OrderProcessingResult;
 
 public class OrderProcessor {
     
-    public Map<Long, List<Order>> groupByCustomer(List<Order> orders) {
+    public OrderProcessingResult groupByCustomer(List<Order> orders) {
         Set<Long> seenOrderIds = new HashSet<>();
         Map<Long, List<Order>> ordersByCustomer = new HashMap<>();
         Map<Long, BigDecimal> totalsByCustomer = new HashMap<>();
@@ -34,6 +35,9 @@ public class OrderProcessor {
             totalsByCustomer.put(order.getCustomerCode(), valorTotal);
         }
 
-        return ordersByCustomer;
+        return new OrderProcessingResult(
+            ordersByCustomer,
+            totalsByCustomer
+        );
     }
 }

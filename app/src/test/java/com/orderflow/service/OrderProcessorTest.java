@@ -1,6 +1,8 @@
 package com.orderflow.service;
 
 import com.orderflow.model.Order;
+import com.orderflow.model.OrderProcessingResult;
+
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -25,20 +27,20 @@ class OrderProcessorTest {
         OrderProcessor processor = new OrderProcessor();
 
         // Act: executar o comportamento.
-        Map<Long, List<Order>> result =
+        OrderProcessingResult result =
                 processor.groupByCustomer(orders);
 
         // Assert: conferir os grupos e seus pedidos.
-        assertEquals(2, result.size());
+        assertEquals(2, result.getOrdersByCustomer().size());
 
         assertEquals(
-            List.of(101L, 103L),
-            result.get(10L).stream().map(Order::getId).toList()
+            new BigDecimal("80.00"),
+            result.getTotalsByCustomer().get(10L)
         );
 
         assertEquals(
-            List.of(102L, 104L),
-            result.get(20L).stream().map(Order::getId).toList()
+            new BigDecimal("100.00"),
+            result.getTotalsByCustomer().get(20L)
         );
     }
 }
