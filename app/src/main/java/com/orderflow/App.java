@@ -3,12 +3,37 @@
  */
 package com.orderflow;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+import com.orderflow.model.Order;
+import com.orderflow.service.OrderProcessor;
+
 public class App {
     public String getGreeting() {
         return "Hello World!";
     }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        List<Order> orders = List.of(
+            new Order(101L, 10L, new BigDecimal("50.00")),
+            new Order(102L, 20L, new BigDecimal("80.00")),
+            new Order(103L, 10L, new BigDecimal("30.00")),
+            new Order(101L, 10L, new BigDecimal("50.00")),
+            new Order(104L, 20L, new BigDecimal("20.00"))
+        );
+
+        OrderProcessor processor = new OrderProcessor();
+        Map<Long, List<Order>> grouped =
+                processor.groupByCustomer(orders);
+
+        for (Map.Entry<Long, List<Order>> entry : grouped.entrySet()) {
+            System.out.println("Customer: " + entry.getKey());
+
+            for (Order order : entry.getValue()) {
+                System.out.println("  Order: " + order.getId());
+            }
+        }
     }
 }
