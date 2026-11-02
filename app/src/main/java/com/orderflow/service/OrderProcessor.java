@@ -19,8 +19,7 @@ public class OrderProcessor {
         Map<Long, BigDecimal> totalsByCustomer = new HashMap<>();
 
         for (Order order : orders) {
-            if (seenOrderIds.contains(order.getId())) continue;
-            seenOrderIds.add(order.getId());
+            if (!seenOrderIds.add(order.getId())) continue;
 
             if(!ordersByCustomer.containsKey(order.getCustomerCode())) {
                 ordersByCustomer.put(order.getCustomerCode(), new ArrayList<>());
