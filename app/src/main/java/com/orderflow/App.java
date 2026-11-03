@@ -4,6 +4,7 @@
 package com.orderflow;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -51,5 +52,29 @@ public class App {
         System.out.println(orders2Set.add(duplicate));
         System.out.println(orders2Set.add(another));
         System.out.println(orders2Set.size());
+
+        //3
+        Map<Long, Set<Order>> ordersByCustomer = new HashMap<>();
+  
+        List<Order> orders3List = List.of(
+            new Order(1L, 100L, new BigDecimal("50.00")),
+            new Order(1L, 100L, new BigDecimal("80.00")),
+            new Order(2L, 100L, new BigDecimal("30.00")),
+            new Order(3L, 200L, new BigDecimal("90.00"))
+        );
+
+        for (Order order : orders3List) {
+            Long customerCode = order.getCustomerCode();
+
+            Set<Order> ordersForCustomer  = ordersByCustomer.get(customerCode);
+            if (ordersForCustomer  == null) {
+                ordersForCustomer = new HashSet<>();
+                ordersByCustomer.put(customerCode, ordersForCustomer);
             }
+
+            ordersForCustomer .add(order);
         }
+
+
+    }
+}
