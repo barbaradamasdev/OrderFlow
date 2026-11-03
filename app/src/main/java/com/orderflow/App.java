@@ -4,8 +4,10 @@
 package com.orderflow;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.orderflow.model.Order;
 import com.orderflow.model.OrderProcessingResult;
@@ -17,6 +19,7 @@ public class App {
     }
 
     public static void main(String[] args) {
+        //1
         List<Order> orders = List.of(
             new Order(101L, 10L, new BigDecimal("50.00")),
             new Order(102L, 20L, new BigDecimal("80.00")),
@@ -36,5 +39,17 @@ public class App {
                 System.out.println("  Order: " + order.getId());
             }
         }
-    }
-}
+
+        //2
+        Order first = new Order(1L, 100L, new BigDecimal("50.00"));
+        Order duplicate = new Order(1L, 100L, new BigDecimal("80.00"));
+        Order another = new Order(2L, 100L, new BigDecimal("50.00"));
+
+        Set<Order> orders2Set = new HashSet<>();
+
+        System.out.println(orders2Set.add(first));
+        System.out.println(orders2Set.add(duplicate));
+        System.out.println(orders2Set.add(another));
+        System.out.println(orders2Set.size());
+            }
+        }
