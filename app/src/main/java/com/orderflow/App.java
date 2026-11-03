@@ -4,6 +4,7 @@
 package com.orderflow;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -76,5 +77,49 @@ public class App {
         }
 
 
+        //leetcode
+        int[] numbers = {2, 7, 11, 15};
+        int target = 9;
+
+        int[] result2 = twoSum(numbers, target);
+        System.out.println(Arrays.toString(result2)); // [0, 1]
+        
+        int[] numbers2 = {3, 2, 4};
+        int target2 = 6;
+
+        int[] result3 = twoSum2(numbers2, target2);
+        System.out.println(Arrays.toString(result3)); // [0, 1]
+
+    }
+
+    //opcao O(n²)
+    public static int[] twoSum(int[] numbers, int target) {
+        for (int i = 0; i < numbers.length; i++) {
+            for (int j = i + 1; j < numbers.length; j++) {
+                if (numbers[i] + numbers[j] == target) {
+                    return new int[] {i, j};
+                }
+            }
+        }
+
+        return new int[0];
+    }
+
+    //opcao O(n)
+    public static int[] twoSum2(int[] numbers, int target) {
+        Map<Integer, Integer> numbersMap = new HashMap<>();
+
+        for (int i = 0; i < numbers.length; i++) {
+            int complement = target - numbers[i];
+            Integer previousIndex = numbersMap.get(complement);
+
+            if (previousIndex != null) {
+                return new int[] {previousIndex, i};
+            }
+
+            numbersMap.put(numbers[i], i);
+        }
+
+        return new int[0];
     }
 }
