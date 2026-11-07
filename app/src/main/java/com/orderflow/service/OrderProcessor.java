@@ -8,9 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.stereotype.Service;
+
 import com.orderflow.model.Order;
 import com.orderflow.model.OrderProcessingResult;
 
+@Service 
 public class OrderProcessor {
     
     public OrderProcessingResult groupByCustomer(List<Order> orders) {
