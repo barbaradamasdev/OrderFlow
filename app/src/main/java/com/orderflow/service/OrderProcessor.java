@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,27 @@ public class OrderProcessor {
             valorTotal = valorTotal.add(order.getAmount());
             totalsByCustomer.put(order.getCustomerCode(), valorTotal);
         }
+
+        return new OrderProcessingResult(
+            ordersByCustomer,
+            totalsByCustomer
+        );
+    }
+
+    public OrderProcessingResult groupByCustomerWithStreams(List<Order> orders) {
+        List<Order> uniqueOrders = orders.stream()
+            .distinct()
+            .toList();
+
+        Map<Long, List<Order>> ordersByCustomer = uniqueOrders.stream()
+            .collect(Collectors.groupingBy(Order::getCustomerCode));
+
+        Map<Long, BigDecimal> totalsByCustomer = uniqueOrders.stream()
+            .collect(Collectors.toMap(
+                Order::getCustomerCode,
+                Order::getAmount,
+                BigDecimal::add
+            ));
 
         return new OrderProcessingResult(
             ordersByCustomer,
