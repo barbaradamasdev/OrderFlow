@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -52,10 +53,11 @@ class OrderControllerTest {
             """;
 
         mockMvc.perform(
-                post("/orders/process")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json)
-            )
-            .andExpect(status().isOk());
+            post("/orders/process")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.totalsByCustomer['10']").value(50.0));
     }
 }
