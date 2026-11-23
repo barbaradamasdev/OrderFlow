@@ -12,14 +12,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'chmod +x ./gradlew'
-                sh './gradlew :app:assemble'
+                sh './gradlew --no-daemon :app:assemble'
             }
         }
 
         stage('Test') {
             steps {
-                sh './gradlew :app:test'
+                sh './gradlew --no-daemon :app:test'
             }
         }
     }
