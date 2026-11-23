@@ -6,3 +6,9 @@ build
 
 # Ignore Kotlin plugin data
 .kotlin
+
+# Java compiled files
+*.class
+
+# IDE generated output
+**/bin/
