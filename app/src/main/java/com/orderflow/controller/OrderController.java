@@ -17,11 +17,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController 
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderProcessor orderProcessor;
+    private static final Logger log =
+        LoggerFactory.getLogger(OrderController.class);
 
     public OrderController(OrderProcessor orderProcessor) {
         this.orderProcessor = orderProcessor;
@@ -29,17 +33,24 @@ public class OrderController {
 
     @PostMapping("/process")
     public ResponseEntity<OrderProcessingResult> processOrders(
-            @RequestBody @NotEmpty  List<@Valid CreateOrderRequest> requests) {
+            @RequestBody @NotEmpty List<@Valid CreateOrderRequest> requests) {
+
+        log.info("Order processing request received. orderCount={}",
+                requests.size());
 
         List<Order> orders = requests.stream()
-            .map(request -> new Order(
-                request.id(), 
-                request.customerCode(), 
-                request.amount()))
-            .toList();
+                .map(request -> new Order(
+                        request.id(),
+                        request.customerCode(),
+                        request.amount()))
+                .toList();
 
-        OrderProcessingResult result = orderProcessor.groupByCustomer(orders);
+        OrderProcessingResult result =
+                orderProcessor.groupByCustomer(orders);
+
+        log.info("Order processing completed. customerCount={}",
+                result.getOrdersByCustomer().size());
+
         return ResponseEntity.ok(result);
     }
-    
 }

@@ -14,33 +14,60 @@ import org.springframework.stereotype.Service;
 import com.orderflow.model.Order;
 import com.orderflow.model.OrderProcessingResult;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service 
 public class OrderProcessor {
+    private static final Logger log =
+        LoggerFactory.getLogger(OrderProcessor.class);
     
     public OrderProcessingResult groupByCustomer(List<Order> orders) {
+
+        log.info("Starting order grouping. receivedCount={}",
+                orders.size());
+
         Set<Long> seenOrderIds = new HashSet<>();
         Map<Long, List<Order>> ordersByCustomer = new HashMap<>();
         Map<Long, BigDecimal> totalsByCustomer = new HashMap<>();
 
-        for (Order order : orders) {
-            if (!seenOrderIds.add(order.getId())) continue;
+        int duplicates = 0;
 
-            if(!ordersByCustomer.containsKey(order.getCustomerCode())) {
-                ordersByCustomer.put(order.getCustomerCode(), new ArrayList<>());
+        for (Order order : orders) {
+
+            if (!seenOrderIds.add(order.getId())) {
+                duplicates++;
+
+                log.debug("Duplicate order ignored. orderId={}",
+                        order.getId());
+
+                continue;
             }
 
-            ordersByCustomer.get(order.getCustomerCode()).add(order);
+            ordersByCustomer
+                    .computeIfAbsent(
+                            order.getCustomerCode(),
+                            key -> new ArrayList<>()
+                    )
+                    .add(order);
 
-            BigDecimal valorTotal = totalsByCustomer.get(order.getCustomerCode());
-            if (valorTotal == null) valorTotal = BigDecimal.ZERO;
-
-            valorTotal = valorTotal.add(order.getAmount());
-            totalsByCustomer.put(order.getCustomerCode(), valorTotal);
+            totalsByCustomer.merge(
+                    order.getCustomerCode(),
+                    order.getAmount(),
+                    BigDecimal::add
+            );
         }
 
+        log.info(
+                "Order grouping completed. uniqueOrders={} duplicates={} customers={}",
+                seenOrderIds.size(),
+                duplicates,
+                ordersByCustomer.size()
+        );
+
         return new OrderProcessingResult(
-            ordersByCustomer,
-            totalsByCustomer
+                ordersByCustomer,
+                totalsByCustomer
         );
     }
 
