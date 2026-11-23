@@ -25,7 +25,8 @@ pipeline {
 
     post {
         always {
-            echo 'OrderFlow pipeline finished.'
+            junit allowEmptyResults: false,
+                testResults: 'app/build/test-results/test/*.xml'
         }
 
         success {
